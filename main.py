@@ -8,7 +8,10 @@ app = FastAPI()
 def calculate_total_pairs(texts):
     total_pairs = 0
 
-    for text in texts:
+    # Split the input string by line breaks or commas
+    text_list = re.split(r'\n|,', texts)
+
+    for text in text_list:
         # Use regular expressions to extract the size and quantity
         match = re.search(r'(\d+(?:\.\d+)?)(?:[a-zA-Z]?[xX-]\s*(\d+))?', text)
 
@@ -22,6 +25,6 @@ def calculate_total_pairs(texts):
     return total_pairs
 
 @app.post("/calculate")
-async def calculate(texts: List[str] = Query(..., description="List of texts separated by line breaks or commas")):
+async def calculate(texts: str = Query(..., description="A single string containing a list of texts separated by line breaks or commas")):
     result = calculate_total_pairs(texts)
     return {"total_pairs": result}
